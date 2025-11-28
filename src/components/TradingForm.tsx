@@ -59,8 +59,8 @@ export function TradingForm({ onSubmit, loading = false }: TradingFormProps) {
     onSubmit(payload);
   };
 
-  const inputClass = "w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-slate-100 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none transition-all placeholder:text-slate-500";
-  const labelClass = "block text-sm font-medium text-slate-400 mb-1";
+  const inputClass = "w-full bg-slate-800/80 border border-slate-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400 text-base";
+  const labelClass = "block text-sm font-semibold text-slate-200 mb-2";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 text-slate-200">

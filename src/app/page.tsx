@@ -13,7 +13,7 @@ export default function Home() {
   const [profile, setProfile] = useState<TradingProfileInput | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"plan" | "coach">("plan");
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const handleSubmit = async (formData: TradingProfileInput) => {
     setLoading(true);
@@ -112,15 +112,15 @@ export default function Home() {
         {/* Content Grid */}
         <div className="grid gap-8 lg:grid-cols-2 items-start">
           {/* Left Column: Form */}
-          <div className="bg-slate-900/40 backdrop-blur-xl rounded-3xl border border-slate-800/60 p-1 shadow-2xl ring-1 ring-white/5">
-            <div className="bg-slate-950/50 rounded-[20px] p-6 md:p-8 h-full">
+          <div className="bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-slate-800/60 p-1 shadow-2xl ring-1 ring-white/10">
+            <div className="bg-slate-950/80 rounded-[20px] p-6 md:p-8 h-full">
               <TradingForm onSubmit={handleSubmit} loading={loading} />
             </div>
           </div>
 
           {/* Right Column: Result */}
-          <div className="bg-slate-900/40 backdrop-blur-xl rounded-3xl border border-slate-800/60 p-1 shadow-2xl ring-1 ring-white/5 h-full min-h-[600px] flex flex-col">
-            <div className="bg-slate-950/50 rounded-[20px] p-6 md:p-8 h-full flex flex-col relative overflow-hidden">
+          <div className="bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-slate-800/60 p-1 shadow-2xl ring-1 ring-white/10 h-full min-h-[600px] flex flex-col">
+            <div className="bg-slate-950/80 rounded-[20px] p-6 md:p-8 h-full flex flex-col relative overflow-hidden">
             {loading ? (
               <div className="flex-1 flex items-center justify-center text-slate-400 animate-pulse">
                 Génération du plan en cours...
@@ -131,24 +131,8 @@ export default function Home() {
               </div>
             ) : plan ? (
               <div className="flex flex-col h-full">
-                <div className="flex justify-between items-center mb-6 border-b border-slate-700/50 pb-4">
-                  <div className="flex bg-slate-900/50 p-1 rounded-lg border border-slate-700/50">
-                    <button 
-                        onClick={() => setActiveTab("plan")}
-                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === "plan" ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
-                    >
-                        Ton Plan
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab("coach")}
-                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === "coach" ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"}`}
-                    >
-                        Coach IA
-                    </button>
-                  </div>
-                  
-                  {activeTab === "plan" && (
-                    <div className="flex gap-2">
+                <div className="flex justify-end items-center mb-6 border-b border-slate-700/50 pb-4">
+                  <div className="flex gap-2">
                         <button
                         onClick={handleCopy}
                         className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-md transition-colors flex items-center gap-2"
@@ -164,19 +148,12 @@ export default function Home() {
                         PDF
                         </button>
                     </div>
-                  )}
                 </div>
                 
                 <div className="flex-1 overflow-hidden relative">
-                    {activeTab === "plan" ? (
-                        <div className="prose prose-invert max-w-none text-sm overflow-y-auto h-full pr-2 custom-scrollbar absolute inset-0">
-                            <ReactMarkdown>{plan.markdown}</ReactMarkdown>
-                        </div>
-                    ) : (
-                        <div className="h-full absolute inset-0">
-                            <TradingCoachChat plan={plan.markdown} profile={profile} />
-                        </div>
-                    )}
+                    <div className="prose prose-invert prose-p:text-slate-100 prose-headings:text-white prose-li:text-slate-100 prose-strong:text-white prose-p:leading-loose prose-li:leading-loose prose-li:mb-2 max-w-none text-base overflow-y-auto h-full pr-4 custom-scrollbar absolute inset-0">
+                        <ReactMarkdown>{plan.markdown}</ReactMarkdown>
+                    </div>
                 </div>
               </div>
             ) : (
@@ -218,6 +195,39 @@ export default function Home() {
           </p>
         </footer>
       </div>
+
+      {/* Floating Chatbot */}
+      {plan && (
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
+          {isChatOpen && (
+            <div className="w-[350px] h-[500px] bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 fade-in duration-300">
+              <div className="bg-slate-800 p-3 border-b border-slate-700 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="font-bold text-white text-sm">Coach Trading IA</span>
+                </div>
+                <button onClick={() => setIsChatOpen(false)} className="text-slate-400 hover:text-white">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden relative">
+                 <TradingCoachChat plan={plan.markdown} profile={profile} />
+              </div>
+            </div>
+          )}
+          
+          <button 
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className="bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-full shadow-lg shadow-blue-600/30 transition-all hover:scale-110 active:scale-95 flex items-center justify-center"
+          >
+            {isChatOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            )}
+          </button>
+        </div>
+      )}
     </main>
   );
 }

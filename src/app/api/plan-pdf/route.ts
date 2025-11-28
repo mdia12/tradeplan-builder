@@ -121,21 +121,22 @@ export async function POST(req: Request) {
       
       if (trimmedLine.startsWith("# ")) {
         // H1
-        doc.moveDown(1);
+        doc.moveDown(1.5);
         doc.fontSize(18).font("Helvetica-Bold").text(trimmedLine.replace(/^#\s+/, ""), { align: "left" });
-        doc.moveDown(0.5);
+        doc.moveDown(0.8);
       } else if (trimmedLine.startsWith("## ")) {
         // H2
-        doc.moveDown(0.8);
+        doc.moveDown(1.2);
         doc.fontSize(15).font("Helvetica-Bold").text(trimmedLine.replace(/^##\s+/, ""), { align: "left" });
-        doc.moveDown(0.3);
+        doc.moveDown(0.5);
       } else if (trimmedLine.startsWith("### ")) {
         // H3
-        doc.moveDown(0.5);
+        doc.moveDown(0.8);
         doc.fontSize(13).font("Helvetica-Bold").text(trimmedLine.replace(/^###\s+/, ""), { align: "left" });
-        doc.moveDown(0.2);
+        doc.moveDown(0.4);
       } else if (trimmedLine.startsWith("- ") || trimmedLine.startsWith("* ")) {
         // Bullet point
+        doc.moveDown(0.5);
         doc.fontSize(12).font("Helvetica").text(`• ${trimmedLine.replace(/^[-*]\s+/, "")}`, {
           indent: 20,
           align: "left",
@@ -144,12 +145,14 @@ export async function POST(req: Request) {
       } else {
         // Normal text
         if (/^\d+\.\s/.test(trimmedLine)) {
+             doc.moveDown(0.5);
              doc.fontSize(12).font("Helvetica").text(trimmedLine, {
                 indent: 20,
                 align: "left",
                 width: 480
             });
         } else {
+            doc.moveDown(0.2);
             doc.fontSize(12).font("Helvetica").text(trimmedLine, {
                 align: "left",
                 width: 495
