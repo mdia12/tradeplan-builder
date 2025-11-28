@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import type { TradingProfileInput } from "@/types/trading";
 import { TradingForm } from "@/components/TradingForm";
 import { TradingCoachChat } from "@/components/TradingCoachChat";
+import { FAQ } from "@/components/FAQ";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), { ssr: false });
 
@@ -184,6 +185,9 @@ export default function Home() {
             </div>
           </div>
         </div>
+        {/* FAQ Section */}
+        <FAQ />
+
         {/* Disclaimer Footer */}
         <footer className="text-center pt-10 pb-4 border-t border-slate-800/50 mt-10">
           <p className="text-xs text-slate-500 max-w-3xl mx-auto leading-relaxed">
